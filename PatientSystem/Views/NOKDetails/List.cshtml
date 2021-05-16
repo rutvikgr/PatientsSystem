@@ -1,0 +1,316 @@
+﻿@model PatientSystem.ViewModel.NOKDetails.NOKDetailsViewModel
+@{
+    ViewBag.Title = "List";
+}
+@section viewcss
+{
+    <link rel="stylesheet" href="~/Content/bootstrap-datepicker.min.css">
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Next of Kin Detail List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <button type="button" onclick="CreateNOK()" class="btn btn-primary" style="float:right;margin-right:15px;">Create new next of kin details</button>
+                    </div>
+                    <table class="table table-bordered table-striped" id="NOKDetailTable">
+                        <thead>
+                            <tr>
+                                <th>NOK Id</th>
+                                <th>NOK Name</th>
+                                <th>Patient Id</th>
+                                <th>Patient Name</th>
+                                <th>Relationship</th>
+                                <th>Phone number</th>
+                                <th>Email</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="modal-view-nok">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Edit Next of Kin Details</h4>
+            </div>
+            @using (Html.BeginForm("CreateUpdateNOK", "NOKDetails", FormMethod.Post, new { @class = "form-horizontal", @id = "NOKForm" }))
+            {
+                <div class="modal-body">
+
+                    @Html.HiddenFor(x => x.NOKId)
+
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.NOKName, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.NOKName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.NOKName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PatientId, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.DropDownListFor(x => x.PatientId, Model.PatientsList, "", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PatientId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.RelationshipId, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.DropDownListFor(x => x.RelationshipId, Model.RelationshipList, "", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.RelationshipId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PhoneNumber, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.PhoneNumber, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PhoneNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.MobileNumber, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.MobileNumber, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.MobileNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.EmailAddress, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.EmailAddress, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.EmailAddress, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PrimaryContact, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9" style="margin-top:7px;">
+                            @Html.CheckBoxFor(x => x.PrimaryContact)
+                            @Html.ValidationMessageFor(x => x.PrimaryContact, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="button" id="SubmitButton">Submit</button>
+                </div>
+            }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@section viewjs
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //Date picker
+            $('.datepicker').datepicker({
+                autoclose: true,
+                formate: "mm/dd/yyyy"
+            });
+
+            LoadNOK();
+        });
+
+        function CreateNOK() {
+            ResetNOKFormValues();
+            $('#modal-view-nok').modal('show');
+        }
+
+        function EditNOK(btn) {
+            ResetNOKFormValues();
+            var nokId = $(btn).data("nokid");
+            if (nokId !== undefined) {
+                $("#NOKId").val(nokId);
+
+                $.get("/NOKDetails/LoadNOK?nokId=" + nokId, function (data, status) {
+                    $("#PatientId").val(data.PatientId);
+                    $("#NOKName").val(data.NOKName);
+                    $("#RelationshipId").val(data.RelationshipId);
+                    $("#PhoneNumber").val(data.PhoneNumber);
+                    $("#MobileNumber").val(data.MobileNumber);
+                    $("#EmailAddress").val(data.EmailAddress);
+
+                    if (data.PrimaryContact) {
+                        $("#PrimaryContact").attr('checked', 'true');
+                    }
+                });
+
+                $('#modal-view-nok').modal('show');
+            }
+        }
+
+        $("#SubmitButton").click(function () {
+            var checked = $("#PrimaryContact").is(':checked');
+            var formData = {
+                NOKId: $("#NOKId").val(),
+                PatientId: $("#PatientId").val(),
+                NOKName: $("#NOKName").val(),
+                RelationshipId: $("#RelationshipId").val(),
+                PhoneNumber: $("#PhoneNumber").val(),
+                MobileNumber: $("#MobileNumber").val(),
+                EmailAddress: $("#EmailAddress").val(),
+                PrimaryContact: checked ? true : false
+            }
+
+            if (formData.NOKName === "")
+                toastr.error("NOK name is required.");
+
+            else if (formData.PatientId === "" || formData.PatientId <= 0)
+                toastr.error("Patient is required.");
+
+            else if (formData.RelationshipId <= 0)
+                toastr.error("Relationship is required.");
+
+            else if (formData.PhoneNumber === "")
+                toastr.error("Phone number is required.");
+
+            else if (formData.MobileNumber === "")
+                toastr.error("Mobile number is required.");
+
+            else if (formData.EmailAddress === "")
+                toastr.error("Email address is required.");
+
+            else {
+                $.ajax({
+                    url: "/NOKDetails/CreateUpdateNOK",
+                    method: "POST",  // post
+                    data: formData,
+                    success: function (data) {
+
+                        if (data) {
+                            $('#modal-view-nok').modal('toggle');
+                            LoadNOK();
+                            toastr.success("Next of kin details updated successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        });
+
+        function ResetNOKFormValues() {
+            $("#NOKId").val("");
+            $("#PatientId").val("");
+            $("#NOKName").val("");
+            $("#RelationshipId").val("");
+            $("#PhoneNumber").val("");
+            $("#MobileNumber").val("");
+            $("#EmailAddress").val("");
+            $("#PrimaryContact").attr('checked', 'false').removeAttr('checked');
+        }
+
+        function DeleteNOK(btn) {
+            var nokId = $(btn).data("nokid");
+            if (nokId !== undefined) {
+                $.ajax({
+                    url: "/NOKDetails/DeleteNOK?id=" + nokId,
+                    method: "POST",  // post
+                    beforeSend: function () {
+                        return confirm("Are you sure you would like to delete this NOK detail?");
+                    },
+                    success: function (data) {
+                        if (data) {
+                            LoadNOK();
+                            toastr.success("Next of kin details removed successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        }
+
+        function LoadNOK() {
+            $("#NOKDetailTable").DataTable().destroy();
+
+            $('#NOKDetailTable')
+                .DataTable({
+                    "sAjaxSource": "/NOKDetails/LoadNOKDetails",
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bSearchable": false,
+                    "bFilter": false,
+                    "pageLength": 10,
+                    "order": [[0, 'asc']],
+                    "language": {
+                        "emptyTable": "No record found.",
+                        "processing":
+                            '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                    },
+                    "columns": [
+                        {
+                            "data": "NOKId",
+                            "width": "10%"
+                        },
+                        {
+                            "data": "NOKName",
+                            "autoWidth": true
+                        },
+                        {
+                            "data": "PatientId",
+                            "width": "10%"
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = "";
+
+                                if (row.Patient.SurName != null || row.Patient.SurName != "") {
+                                    a = row.Patient.FirstName + " " + row.Patient.SurName;
+                                }
+                                else {
+                                    a = row.Patient.FirstName;
+                                }
+
+                                return a;
+                            },
+                            "autoWidth": true
+                        },
+                        {
+                            "data": "Relationship.Description",
+                            "width": "10%"
+                        },
+                        {
+                            "data": "PhoneNumber",
+                            "width": "15%"
+                        },
+                        {
+                            "data": "EmailAddress",
+                            "autoWidth": true
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = '<a onclick="EditNOK(this)" id="NOK_' + row.NOKId + '" style="cursor: pointer;" data-NOKId="' + row.NOKId + '"><i class="fa fa-fw fa-edit"></i></a>' +
+                                    '<a onclick="DeleteNOK(this)" id="NOK_' + row.NOKId + '" style="cursor: pointer;" data-NOKId="' + row.NOKId + '"><i class="fa fa-fw fa-remove"></i></a>';
+                                return a;
+                            },
+                            "autoWidth": true
+                        }
+                    ],
+                    "createdRow": function (row, data, dataIndex) {
+                    }
+                });
+        }
+    </script>
+}

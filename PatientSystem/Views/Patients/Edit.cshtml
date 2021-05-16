@@ -1,0 +1,693 @@
+﻿@model PatientSystem.ViewModel.Patient.PatientViewModel
+@{
+    ViewBag.Title = "Edit";
+}
+@section viewcss
+{
+    <link rel="stylesheet" href="~/Content/bootstrap-datepicker.min.css">
+}
+<section class="content container-fluid">
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <div class="row">
+                <div class="box-title col-md-6">
+                    <h4 class="box-title" style="color: #3c8dbc"><b>PATIENT PROFILE</b></h4>
+                </div>
+                <div class="box-title col-md-6" style="float:right;">
+                    <a href="/Patients/List" class="close"><span aria-hidden="true">×</span></a>
+                </div>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="active">
+                                <a id="custom-tabs-patients-tab" data-toggle="tab" href="#custom-tabs-patients"><b>Patient Details</b></a>
+                            </li>
+                            <li class="">
+                                <a id="custom-tabs-nok-tab" data-toggle="tab" href="#custom-tabs-nok"><b>Next of Kin Details</b></a>
+                            </li>
+                            <li class="">
+                                <a id="custom-tabs-property-items-tab" data-toggle="tab" href="#custom-tabs-property-items"><b>Property Items</b></a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="custom-tabs-three-tabContent">
+                            <div class="tab-pane active in fade" id="custom-tabs-patients" role="tabpanel" aria-labelledby="custom-tabs-patients-tab">
+                                <div class="box-body">
+                                    @using (Html.BeginForm("EditPatient", "Patients", FormMethod.Post, new { @class = "form-horizontal" }))
+                                    {
+                                        @Html.HiddenFor(x => x.PatientId)
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.FirstName, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9">
+                                                    @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.DateOfBirth, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9">
+                                                    @Html.TextBoxFor(x => x.DateOfBirth, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                                                    @Html.ValidationMessageFor(x => x.DateOfBirth, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.AddressLine2, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9">
+                                                    @Html.TextBoxFor(x => x.AddressLine2, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.AddressLine2, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.Postal, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9">
+                                                    @Html.TextBoxFor(x => x.Postal, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.Postal, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.Referred, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9" style="margin-top:7px;">
+                                                    @Html.CheckBoxFor(x => x.Referred)
+                                                    @Html.ValidationMessageFor(x => x.Referred, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.SurName, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9">
+                                                    @Html.TextBoxFor(x => x.SurName, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.SurName, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.AddressLine1, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9">
+                                                    @Html.TextBoxFor(x => x.AddressLine1, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.AddressLine1, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.City, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9">
+                                                    @Html.TextBoxFor(x => x.City, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.County, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9">
+                                                    @Html.TextBoxFor(x => x.County, new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(x => x.County, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.ConsentGiven, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9" style="        margin-top: 7px; margin-bottom: 7px;">
+                                                    @Html.CheckBoxFor(x => x.ConsentGiven)
+                                                    @Html.ValidationMessageFor(x => x.ConsentGiven, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.LabelFor(x => x.ReleaseDate, new { @class = "col-sm-3 control-label" })
+                                                <div class="col-sm-9">
+                                                    @Html.TextBoxFor(x => x.ReleaseDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                                                    @Html.ValidationMessageFor(x => x.ReleaseDate, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-primary" type="submit">Submit</button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="custom-tabs-nok" role="tabpanel" aria-labelledby="custom-tabs-nok-tab">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <button type="button" onclick="CreateNOK()" class="btn btn-primary" style="float:right;">Create new next of kin for patient</button>
+                                    </div>
+                                    <table class="table table-bordered table-striped" id="NOKDetailTable" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>NOK Id</th>
+                                                <th>NOK Name</th>
+                                                <th>Relationship</th>
+                                                <th>Phone number</th>
+                                                <th>Email</th>
+                                                <th>Primary Contact</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="custom-tabs-property-items" role="tabpanel" aria-labelledby="custom-tabs-property-items-tab">
+                                <div class="box-body">
+                                    <div class="row">
+                                        <button type="button" onclick="CreatePropertyItem()" class="btn btn-primary" style="float:right;">Create new property item for patient</button>
+                                    </div>
+                                    <table class="table table-bordered" id="PropertyItemTable" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>Property Id</th>
+                                                <th>Item Name</th>
+                                                <th>Description</th>
+                                                <th>Qty</th>
+                                                <th>Collected by</th>
+                                                <th>Collected date</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="modal-view-nok">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Edit Next of Kin Details</h4>
+            </div>
+            @using (Html.BeginForm("CreateUpdateNOK", "NOKDetails", FormMethod.Post, new { @class = "form-horizontal", @id = "NOKForm" }))
+            {
+                <div class="modal-body">
+
+                    @Html.HiddenFor(x => x.PropertyPatientNOKDetail.NOKId)
+                    @Html.HiddenFor(x => x.PropertyPatientNOKDetail.PatientId)
+
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyPatientNOKDetail.NOKName, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9" style="margin-top:7px;">
+                            @Html.TextBoxFor(x => x.PropertyPatientNOKDetail.NOKName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PropertyPatientNOKDetail.NOKName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyPatientNOKDetail.RelationshipId, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9" style="margin-top:7px;">
+                            @Html.DropDownListFor(x => x.PropertyPatientNOKDetail.RelationshipId, Model.PropertyPatientNOKDetail.RelationshipList, "", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PropertyPatientNOKDetail.RelationshipId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyPatientNOKDetail.PhoneNumber, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9" style="margin-top:7px;">
+                            @Html.TextBoxFor(x => x.PropertyPatientNOKDetail.PhoneNumber, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PropertyPatientNOKDetail.PhoneNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyPatientNOKDetail.MobileNumber, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9" style="margin-top:7px;">
+                            @Html.TextBoxFor(x => x.PropertyPatientNOKDetail.MobileNumber, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PropertyPatientNOKDetail.MobileNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyPatientNOKDetail.EmailAddress, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9" style="margin-top:7px;">
+                            @Html.TextBoxFor(x => x.PropertyPatientNOKDetail.EmailAddress, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PropertyPatientNOKDetail.EmailAddress, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyPatientNOKDetail.PrimaryContact, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9" style="margin-top:7px;">
+                            @Html.CheckBoxFor(x => x.PropertyPatientNOKDetail.PrimaryContact)
+                            @Html.ValidationMessageFor(x => x.PropertyPatientNOKDetail.PrimaryContact, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="button" id="SubmitButton">Submit</button>
+                </div>
+            }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-view-property-item">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Edit property item</h4>
+            </div>
+            @using (Html.BeginForm("CreateUpdatePropertyItem", "PropertyItems", FormMethod.Post, new { @class = "form-horizontal", @id = "PropertyItemForm" }))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(x => x.PropertyItemsDetail.PropertyId)
+                    @Html.HiddenFor(x => x.PropertyItemsDetail.PatientId)
+
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyItemsDetail.ItemName, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.PropertyItemsDetail.ItemName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PropertyItemsDetail.ItemName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyItemsDetail.Description, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.PropertyItemsDetail.Description, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PropertyItemsDetail.Description, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyItemsDetail.Qty, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.PropertyItemsDetail.Qty, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PropertyItemsDetail.Qty, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyItemsDetail.CollectedBy, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.PropertyItemsDetail.CollectedBy, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PropertyItemsDetail.CollectedBy, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PropertyItemsDetail.CollectedOn, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.PropertyItemsDetail.CollectedOn, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker" })
+                            @Html.ValidationMessageFor(x => x.PropertyItemsDetail.CollectedOn, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="button" id="PropertyItemSubmitButton">Submit</button>
+                </div>
+            }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@section viewjs
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            //Date picker
+            $('.datepicker').datepicker({
+                autoclose: true,
+                formate: "mm/dd/yyyy"
+            });
+
+            LoadNOK();
+            LoadPropertyItem();
+        });
+
+        $("#SubmitButton").click(function () {
+            var checked = $("#PropertyPatientNOKDetail_PrimaryContact").is(':checked');
+            var formData = {
+                NOKId: $("#PropertyPatientNOKDetail_NOKId").val(),
+                PatientId: $("#PropertyPatientNOKDetail_PatientId").val(),
+                NOKName: $("#PropertyPatientNOKDetail_NOKName").val(),
+                RelationshipId: $("#PropertyPatientNOKDetail_RelationshipId").val(),
+                PhoneNumber: $("#PropertyPatientNOKDetail_PhoneNumber").val(),
+                MobileNumber: $("#PropertyPatientNOKDetail_MobileNumber").val(),
+                EmailAddress: $("#PropertyPatientNOKDetail_EmailAddress").val(),
+                PrimaryContact: checked ? true : false
+            }
+
+            if (formData.NOKName === "")
+                toastr.error("NOK name is required.");
+
+            else if (formData.RelationshipId <= 0)
+                toastr.error("Relationship is required.");
+
+            else if (formData.PhoneNumber === "")
+                toastr.error("Phone number is required.");
+
+            else if (formData.MobileNumber === "")
+                toastr.error("Mobile number is required.");
+
+            else if (formData.EmailAddress === "")
+                toastr.error("Email address is required.");
+
+            else {
+                $.ajax({
+                    url: "/NOKDetails/CreateUpdateNOK",
+                    method: "POST",  // post
+                    data: formData,
+                    success: function (data) {
+
+                        if (data) {
+                            $('#modal-view-nok').modal('toggle');
+                            LoadNOK();
+                            toastr.success("Patient profile updated successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        });
+
+        function CreateNOK() {
+            ResetNOKFormValues();
+            $("#PropertyPatientNOKDetail_PatientId").val($("#PatientId").val());
+            $('#modal-view-nok').modal('show');
+        }
+
+        function EditNOK(btn) {
+            ResetNOKFormValues();
+            var nokId = $(btn).data("nokid");
+            if (nokId !== undefined) {
+                $("#PropertyPatientNOKDetail_NOKId").val(nokId);
+
+                $.get("/NOKDetails/LoadNOK?nokId=" + nokId, function (data, status) {
+                    $("#PropertyPatientNOKDetail_PatientId").val(data.PatientId);
+                    $("#PropertyPatientNOKDetail_NOKName").val(data.NOKName);
+                    $("#PropertyPatientNOKDetail_RelationshipId").val(data.RelationshipId);
+                    $("#PropertyPatientNOKDetail_PhoneNumber").val(data.PhoneNumber);
+                    $("#PropertyPatientNOKDetail_MobileNumber").val(data.MobileNumber);
+                    $("#PropertyPatientNOKDetail_EmailAddress").val(data.EmailAddress);
+
+                    if (data.PrimaryContact) {
+                        $("#PropertyPatientNOKDetail_PrimaryContact").attr('checked', 'true');
+                    }
+                });
+
+                $('#modal-view-nok').modal('show');
+            }
+        }
+
+        function DeleteNOK(btn) {
+            var nokId = $(btn).data("nokid");
+            if (nokId !== undefined) {
+                $.ajax({
+                    url: "/NOKDetails/DeleteNOK?id=" + nokId,
+                    method: "POST",  // post
+                    beforeSend: function () {
+                        return confirm("Are you sure you would like to delete this NOK detail?");
+                    },
+                    success: function (data) {
+                        if (data) {
+                            LoadNOK();
+                            toastr.success("Patient profile updated successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        }
+
+        function ResetNOKFormValues() {
+            $("#PropertyPatientNOKDetail_NOKId").val("");
+            $("#PropertyPatientNOKDetail_PatientId").val("");
+            $("#PropertyPatientNOKDetail_NOKName").val("");
+            $("#PropertyPatientNOKDetail_RelationshipId").val("");
+            $("#PropertyPatientNOKDetail_PhoneNumber").val("");
+            $("#PropertyPatientNOKDetail_MobileNumber").val("");
+            $("#PropertyPatientNOKDetail_EmailAddress").val("");
+            $("#PropertyPatientNOKDetail_PrimaryContact").attr('value', 'false').removeAttr('checked');
+        }
+
+        function LoadNOK() {
+            var patientId = $("#PatientId").val();
+
+            $("#NOKDetailTable").DataTable().destroy();
+
+            $('#NOKDetailTable')
+                .DataTable({
+                    "sAjaxSource": "/NOKDetails/LoadNOKDetailForPatient?PatientId=" + patientId,
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bSearchable": false,
+                    "bFilter": false,
+                    "pageLength": 10,
+                    "bSort": false,
+                    "order": [[0, 'asc']],
+                    "language": {
+                        "emptyTable": "No record found.",
+                        "processing":
+                            '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                    },
+                    "columns": [
+                        {
+                            "data": "NOKId",
+                            "width": "10%"
+                        },
+                        {
+                            "data": "NOKName",
+                            "autoWidth": true
+                        },
+                        {
+                            "data": "Relationship.Description",
+                            "width": "10%"
+                        },
+                        {
+                            "data": "PhoneNumber",
+                            "width": "15%"
+                        },
+                        {
+                            "data": "EmailAddress",
+                            "autoWidth": true
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = "";
+
+                                if (row.PrimaryContact) {
+                                    a = '<input type="checkbox" checked disabled>';
+                                }
+                                else {
+                                    a = '<input type="checkbox" disabled>';
+                                }
+
+                                return a;
+                            },
+                            "autoWidth": true
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = '<a onclick="EditNOK(this)" id="NOK_' + row.NOKId + '" style="cursor: pointer;" data-NOKId="' + row.NOKId + '"><i class="fa fa-fw fa-edit"></i></a>' +
+                                    '<a onclick="DeleteNOK(this)" id="NOK_' + row.NOKId + '" style="cursor: pointer;" data-NOKId="' + row.NOKId + '"><i class="fa fa-fw fa-remove"></i></a>';
+                                return a;
+                            },
+                            "autoWidth": true
+                        }
+                    ],
+                    "createdRow": function (row, data, dataIndex) {
+                    }
+                });
+        }
+
+        function LoadPropertyItem() {
+            var patientId = $("#PatientId").val();
+
+            $("#PropertyItemTable").DataTable().destroy();
+
+            $('#PropertyItemTable')
+                .DataTable({
+                    "sAjaxSource": "/PropertyItems/LoadPropertyItemsForPatient?PatientId=" + patientId,
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bSearchable": false,
+                    "bFilter": false,
+                    "bSort": false,
+                    "pageLength": 10,
+                    "order": [[0, 'asc']],
+                    "language": {
+                        "emptyTable": "No record found.",
+                        "processing":
+                            '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                    },
+                    "columns": [
+                        {
+                            "data": "PropertyId",
+                            "width": "10%"
+                        },
+                        {
+                            "data": "ItemName",
+                            "autoWidth": true
+                        },
+                        {
+                            "data": "Description",
+                            "autoWidth": true
+                        },
+                        {
+                            "data": "Qty",
+                            "width": "5%"
+                        },
+                        {
+                            "data": "CollectedBy",
+                            "autoWidth": true
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = GetDateIfDate(row.CollectedOn);
+                                return a;
+                            },
+                            "autoWidth": true
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = '<a onclick="EditPropertyItem(this)" id=PropertyItem' + row.PropertyId + '" style="cursor: pointer;" data-PropertyItemId="' + row.PropertyId + '"><i class="fa fa-fw fa-edit"></i></a>' +
+                                    '<a onclick="DeletePropertyItem(this)" id="PropertyItem_' + row.PropertyId + '" style="cursor: pointer;" data-PropertyItemId="' + row.PropertyId + '"><i class="fa fa-fw fa-remove"></i></a>';
+                                return a;
+                            },
+                            "autoWidth": true
+                        }
+                    ],
+                    "createdRow": function (row, data, dataIndex) {
+                        if (data.CollectedOn === "" || data.CollectedOn === null || data.CollectedOn === undefined) {
+                            $(row).addClass('bg-warning');
+                        }
+                    }
+                });
+        }
+
+        $("#PropertyItemSubmitButton").click(function () {
+            var formData = {
+                PropertyId: $("#PropertyItemsDetail_PropertyId").val(),
+                PatientId: $("#PropertyItemsDetail_PatientId").val(),
+                ItemName: $("#PropertyItemsDetail_ItemName").val(),
+                Description: $("#PropertyItemsDetail_Description").val(),
+                Qty: $("#PropertyItemsDetail_Qty").val(),
+                CollectedBy: $("#PropertyItemsDetail_CollectedBy").val(),
+                CollectedOn: $("#PropertyItemsDetail_CollectedOn").val()
+            }
+
+            if (formData.ItemName === "")
+                toastr.error("Item name is required.");
+
+            else if (formData.Qty === "")
+                toastr.error("Qty is required.");
+
+            else {
+                $.ajax({
+                    url: "/PropertyItems/CreateUpdatePropertyItem",
+                    method: "POST",  // post
+                    data: formData,
+                    success: function (data) {
+
+                        if (data) {
+                            $('#modal-view-property-item').modal('toggle');
+                            LoadPropertyItem();
+                            toastr.success("Patient profile updated successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        });
+
+        function ResetPropertyItemFormValues() {
+            $("#PropertyItemsDetail_PropertyId").val("");
+            $("#PropertyItemsDetail_PatientId").val("");
+            $("#PropertyItemsDetail_ItemName").val("");
+            $("#PropertyItemsDetail_Description").val("");
+            $("#PropertyItemsDetail_Qty").val("");
+            $("#PropertyItemsDetail_CollectedBy").val("");
+            $("#PropertyItemsDetail_CollectedOn").val("");
+        }
+
+        function CreatePropertyItem() {
+            ResetPropertyItemFormValues();
+            $("#PropertyItemsDetail_PatientId").val($("#PatientId").val());
+            $('#modal-view-property-item').modal('show');
+        }
+
+        function EditPropertyItem(btn) {
+            ResetPropertyItemFormValues();
+            var propertyId = $(btn).data("propertyitemid");
+            if (propertyId !== undefined) {
+                $("#PropertyItemsDetail_PropertyId").val(propertyId);
+
+                $.get("/PropertyItems/LoadPropertyItem?propertyItemId=" + propertyId, function (data, status) {
+                    $("#PropertyItemsDetail_PatientId").val(data.PatientId);
+                    $("#PropertyItemsDetail_ItemName").val(data.ItemName);
+                    $("#PropertyItemsDetail_Description").val(data.Description);
+                    $("#PropertyItemsDetail_Qty").val(data.Qty);
+                    $("#PropertyItemsDetail_CollectedBy").val(data.CollectedBy);
+                    $("#PropertyItemsDetail_CollectedOn").val(GetDateIfDate(data.CollectedOn));
+                });
+
+                $('#modal-view-property-item').modal('show');
+            }
+        }
+
+        function DeletePropertyItem(btn) {
+            var propertyId = $(btn).data("propertyitemid");
+            if (propertyId !== undefined) {
+                $.ajax({
+                    url: "/PropertyItems/DeletePropertyItem?id=" + propertyId,
+                    method: "POST",  // post
+                    beforeSend: function () {
+                        return confirm("Are you sure you would like to delete this property item?");
+                    },
+                    success: function (data) {
+                        if (data) {
+                            LoadPropertyItem();
+                            toastr.success("Patient profile updated successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        }
+
+        function GetDateIfDate(d) {
+            if (d !== null) {
+                var m = d.match(/\/Date\((\d+)\)\//);
+                return m ? (new Date(+m[1])).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }) : d;
+            }
+            else
+                return d;
+        }
+    </script>
+    @{
+        if (TempData["successMessage"] != null)
+        {
+            <script type="text/javascript">
+                toastr.success("@TempData["successMessage"]");
+            </script>
+        }
+
+        if (TempData["errorMessage"] != null)
+        {
+            <script type="text/javascript">
+                toastr.error("@TempData["errorMessage"].ToString()");
+            </script>
+        }
+    }
+}

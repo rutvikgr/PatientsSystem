@@ -1,0 +1,135 @@
+﻿@model PatientSystem.ViewModel.Relationship.RelationshipsViewModel
+@{
+    ViewBag.Title = "List";
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Relationship List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <button type="button" onclick="CreateRelationship()" class="btn btn-primary" style="float:right;margin-right:15px;">Create new relationship option</button>
+                    </div>
+                    <table class="table table-bordered" id="RelationshipTable">
+                        <thead>
+                            <tr>
+                                <th>Relationship Id</th>
+                                <th>Description</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="modal-view-relationship">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Create Relationship Option</h4>
+            </div>
+            @using (Html.BeginForm("CreateRelationship", "Relationships", FormMethod.Post, new { @class = "form-horizontal", @id = "PropertyItemForm" }))
+            {
+                <div class="modal-body">
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Description, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.Description, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Description, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@section viewjs
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            LoadRelationships();
+        });
+
+        function LoadRelationships() {
+            $("#RelationshipTable").DataTable().destroy();
+
+            $('#RelationshipTable')
+                .DataTable({
+                    "sAjaxSource": "/Relationships/LoadRelationships",
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bSearchable": false,
+                    "bFilter": false,
+                    "pageLength": 10,
+                    "order": [[0, 'asc']],
+                    "language": {
+                        "emptyTable": "No record found.",
+                        "processing":
+                            '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                    },
+                    "columns": [
+                        {
+                            "data": "RelationshipId",
+                            "width": "15%"
+                        },
+                        {
+                            "data": "Description",
+                            "autoWidth": true
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = '<a onclick="DeleteRelationship(this)" style="cursor: pointer;" data-RelationshipId="' + row.RelationshipId + '"><i class="fa fa-fw fa-remove"></i></a>';
+                                return a;
+                            },
+                            "width": "5%"
+                        }
+                    ]
+                });
+        }
+
+        function CreateRelationship() {
+            $('#modal-view-relationship').modal('show');
+        }
+
+        function DeleteRelationship(btn) {
+            var relationshipId = $(btn).data("relationshipid");
+            if (relationshipId !== undefined) {
+                $.ajax({
+                    url: "/Relationships/DeleteRelationship?id=" + relationshipId,
+                    method: "POST",  // post
+                    beforeSend: function () {
+                        return confirm("Are you sure you would like to delete this relationship option?");
+                    },
+                    success: function (data) {
+                        if (data) {
+                            LoadPropertyItem();
+                            toastr.success("Relationship option deleted successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+}
+

@@ -1,0 +1,268 @@
+﻿@model PatientSystem.ViewModel.Patient.PatientViewModel
+@{
+    ViewBag.Title = "List";
+}
+@section viewcss
+{
+    <link rel="stylesheet" href="~/Content/bootstrap-datepicker.min.css">
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Patient List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <label style="float:left;margin-left:15px;">Filter:</label>
+                        <select id="FilterList" class="form-control" style="float:left;margin-left:15px;width:200px;margin-bottom:10px;">
+                            <option value="0" selected>All records</option>
+                            <option value="1">Consent Given</option>
+                            <option value="2">Not Released Yet</option>
+                        </select>
+                        <button type="button" onclick="CreatePatient()" class="btn btn-primary" style="float:right;margin-right:15px;">Create new patient</button>
+                    </div>
+                    <table class="table table-bordered table-striped" id="PatientTable">
+                        <thead>
+                            <tr>
+                                <th>Patient Id</th>
+                                <th>Name</th>
+                                <th>Referred</th>
+                                <th>Consent Given</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="modal-view-patient">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Create new patient</h4>
+            </div>
+            @using (Html.BeginForm("EditPatient", "Patients", FormMethod.Post, new { @class = "form-horizontal", @id = "NOKForm" }))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(x => x.PatientId)
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.FirstName, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.FirstName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.SurName, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.SurName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.SurName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.DateOfBirth, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.DateOfBirth, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker" })
+                            @Html.ValidationMessageFor(x => x.DateOfBirth, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.AddressLine1, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.AddressLine1, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.AddressLine1, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.AddressLine2, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.AddressLine2, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.AddressLine2, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.City, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.City, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.City, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Postal, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.Postal, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Postal, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.County, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.County, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.County, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Referred, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9" style="margin-top:7px;">
+                            @Html.CheckBoxFor(x => x.Referred)
+                            @Html.ValidationMessageFor(x => x.Referred, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.ConsentGiven, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9" style="margin-top:7px;">
+                            @Html.CheckBoxFor(x => x.ConsentGiven)
+                            @Html.ValidationMessageFor(x => x.ConsentGiven, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.ReleaseDate, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.ReleaseDate, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker" })
+                            @Html.ValidationMessageFor(x => x.ReleaseDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit" id="SubmitButton">Submit</button>
+                </div>
+            }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@section viewjs
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                autoclose: true,
+                formate: "mm/dd/yyyy"
+            });
+            LoadPatients();
+        });
+
+        function CreatePatient(btn) {
+            $('#modal-view-patient').modal('show');
+        }
+
+        $('#FilterList').on('change', function (e) {
+            LoadPatients();
+        });
+
+        function LoadPatients() {
+            var filter = $("#FilterList").val();
+            $("#PatientTable").DataTable().destroy();
+            $('#PatientTable')
+                .DataTable({
+                    "sAjaxSource": "/Patients/LoadPatients?Filter=" + filter,
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bSearchable": false,
+                    "bFilter": false,
+                    "pageLength": 10,
+                    "order": [[0, 'asc']],
+                    "language": {
+                        "emptyTable": "No record found.",
+                        "processing":
+                            '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                    },
+                    "columns": [
+                        {
+                            "data": "PatientId",
+                            "width": "10%"
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = "";
+
+                                if (row.SurName != null || row.SurName != "") {
+                                    a = row.FirstName + " " + row.SurName;
+                                }
+                                else {
+                                    a = row.FirstName;
+                                }
+
+                                return a;
+                            },
+                            "autoWidth": true
+                        },
+                        {
+                            "data": "Referred",
+                            "width": "15%"
+                        },
+                        {
+                            "data": "ConsentGiven",
+                            "width": "15%"
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = '<a href="/Patients/Edit/' + row.PatientId + '"><i class="fa fa-fw fa-edit"></i></a>' +
+                                    '<a onclick="DeletePatient(this)" style="cursor: pointer;" data-patientId="' + row.PatientId + '"><i class="fa fa-fw fa-remove"></i></a>';
+                                return a;
+                            },
+                            "width": "5%"
+                        }
+                    ],
+                    "createdRow": function (row, data, dataIndex) {
+                        if (data.Reminder == true) {
+                            $(row).addClass('bg-warning');
+                        }
+                    }
+                });
+        }
+
+        function DeletePatient(btn) {
+            var patientId = $(btn).data("patientid");
+            if (patientId !== undefined) {
+                $.ajax({
+                    url: "/Patients/Delete?id=" + patientId,
+                    method: "POST",  // post
+                    beforeSend: function () {
+                        return confirm("Are you sure you would like to delete this patient?");
+                    },
+                    success: function (data) {
+                        if (data) {
+                            LoadPatients();
+                            toastr.success("Patient deleted successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
+    @{
+        if (TempData["successMessage"] != null)
+        {
+            <script type="text/javascript">
+                toastr.success("@TempData["successMessage"]");
+            </script>
+        }
+
+        if (TempData["errorMessage"] != null)
+        {
+            <script type="text/javascript">
+                toastr.error("@TempData["errorMessage"].ToString()");
+            </script>
+        }
+    }
+}

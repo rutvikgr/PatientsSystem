@@ -1,0 +1,52 @@
+﻿@model PatientSystem.ViewModel.Patient.SearchPatientViewModel
+@{
+    ViewBag.Title = "Search";
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Search patient</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    @using (Html.BeginForm("SearchPatientById", "Patients", FormMethod.Post, new { @class = "form-horizontal" }))
+                    {
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.PatientId, new { @class = "col-sm-3 control-label" })
+                                <div class="col-sm-6">
+                                    @Html.TextBoxFor(x => x.PatientId, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(x => x.PatientId, "", new { @class = "text-danger" })
+                                </div>
+                                <button class="btn btn-primary col-sm-2" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section viewjs
+{
+    @{
+        if (TempData["successMessage"] != null)
+        {
+            <script type="text/javascript">
+                toastr.success("@TempData["successMessage"]");
+            </script>
+        }
+
+        if (TempData["errorMessage"] != null)
+        {
+            <script type="text/javascript">
+                toastr.error("@TempData["errorMessage"].ToString()");
+            </script>
+        }
+    }
+}

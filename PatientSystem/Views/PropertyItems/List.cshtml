@@ -1,0 +1,314 @@
+﻿@model PatientSystem.ViewModel.PropertyItems.PropertyItemsViewModel
+@{
+    ViewBag.Title = "List";
+}
+@section viewcss
+{
+    <link rel="stylesheet" href="~/Content/bootstrap-datepicker.min.css">
+}
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Property Item List</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <button type="button" onclick="CreatePropertyItem()" class="btn btn-primary" style="float:right;margin-right:15px;">Create new property item</button>
+                    </div>
+                    <table class="table table-bordered" id="PropertyItemTable">
+                        <thead>
+                            <tr>
+                                <th>Property Id</th>
+                                <th>Item Name</th>
+                                <th>Item Description</th>
+                                <th>Patient Id</th>
+                                <th>Patient Name</th>
+                                <th>Qty</th>
+                                <th>Collected by</th>
+                                <th>Collected on</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="modal fade" id="modal-view-property-item">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Edit property item</h4>
+            </div>
+            @using (Html.BeginForm("CreateUpdatePropertyItem", "PropertyItems", FormMethod.Post, new { @class = "form-horizontal", @id = "PropertyItemForm" }))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(x => x.PropertyId)
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.PatientId, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.DropDownListFor(x => x.PatientId, Model.PatientsList, "", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.PatientId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.ItemName, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.ItemName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.ItemName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Description, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.Description, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Description, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Qty, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.Qty, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Qty, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.CollectedBy, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.CollectedBy, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.CollectedBy, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.CollectedOn, new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(x => x.CollectedOn, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker" })
+                            @Html.ValidationMessageFor(x => x.CollectedOn, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="button" id="PropertyItemSubmitButton">Submit</button>
+                </div>
+            }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@section viewjs
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //Date picker
+            $('.datepicker').datepicker({
+                autoclose: true,
+                formate: "mm/dd/yyyy"
+            });
+
+            LoadPropertyItem();
+        });
+
+        function LoadPropertyItem() {
+            $("#PropertyItemTable").DataTable().destroy();
+
+            $('#PropertyItemTable')
+                .DataTable({
+                    "sAjaxSource": "/PropertyItems/LoadPropertyItems",
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bSearchable": false,
+                    "bFilter": false,
+                    "pageLength": 10,
+                    "order": [[0, 'asc']],
+                    "language": {
+                        "emptyTable": "No record found.",
+                        "processing":
+                            '<i class="fa fa-spinner fa-spin fa-3x fa-fw" style="color:#2a2b2b;"></i><span class="sr-only">Loading...</span> '
+                    },
+                    "columns": [
+                        {
+                            "data": "PropertyId",
+                            "width": "10%"
+                        },
+                        {
+                            "data": "ItemName",
+                            "autoWidth": true
+                        },
+                        {
+                            "data": "Description",
+                            "autoWidth": true
+                        },
+                        {
+                            "data": "PatientId",
+                            "width": "10%"
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = "";
+
+                                if (row.Patient.SurName != null || row.Patient.SurName != "") {
+                                    a = row.Patient.FirstName + " " + row.Patient.SurName;
+                                }
+                                else {
+                                    a = row.Patient.FirstName;
+                                }
+
+                                return a;
+                            },
+                            "autoWidth": true
+                        },
+                        {
+                            "data": "Qty",
+                            "width": "5%"
+                        },
+                        {
+                            "data": "CollectedBy",
+                            "autoWidth": true
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = GetDateIfDate(row.CollectedOn);
+                                return a;
+                            },
+                            "autoWidth": true
+                        },
+                        {
+                            "render": function (data, type, row, meta) {
+                                var a = '<a onclick="EditPropertyItem(this)" id=PropertyItem' + row.PropertyId + '" style="cursor: pointer;" data-PropertyItemId="' + row.PropertyId + '"><i class="fa fa-fw fa-edit"></i></a>' +
+                                    '<a onclick="DeletePropertyItem(this)" id="PropertyItem_' + row.PropertyId + '" style="cursor: pointer;" data-PropertyItemId="' + row.PropertyId + '"><i class="fa fa-fw fa-remove"></i></a>';
+                                return a;
+                            },
+                            "autoWidth": true
+                        }
+                    ],
+                    "createdRow": function (row, data, dataIndex) {
+                        console.log(data.CollectedOn);
+                        if (data.CollectedOn === "" || data.CollectedOn === undefined || data.CollectedOn === null) {
+                            $(row).addClass('bg-warning');
+                        }
+                    }
+                });
+        }
+
+        $("#PropertyItemSubmitButton").click(function () {
+            var formData = {
+                PropertyId: $("#PropertyId").val(),
+                PatientId: $("#PatientId").val(),
+                ItemName: $("#ItemName").val(),
+                Description: $("#Description").val(),
+                Qty: $("#Qty").val(),
+                CollectedBy: $("#CollectedBy").val(),
+                CollectedOn: $("#CollectedOn").val()
+            }
+
+            if (formData.PatientId === "" || formData.PatientId <= 0)
+                toastr.error("Patient is required.");
+
+            else if (formData.ItemName === "")
+                toastr.error("Item name is required.");
+
+            else if (formData.Qty <= 0)
+                toastr.error("Qty is required.");
+
+            else {
+                $.ajax({
+                    url: "/PropertyItems/CreateUpdatePropertyItem",
+                    method: "POST",  // post
+                    data: formData,
+                    success: function (data) {
+
+                        if (data) {
+                            $('#modal-view-property-item').modal('toggle');
+                            LoadPropertyItem();
+                            toastr.success("Patient profile updated successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        });
+
+        function ResetPropertyItemFormValues() {
+            $("#PropertyId").val("");
+            $("#PatientId").val("");
+            $("#ItemName").val("");
+            $("#Description").val("");
+            $("#Qty").val("");
+            $("#CollectedBy").val("");
+            $("#CollectedOn").val("");
+        }
+
+        function CreatePropertyItem() {
+            ResetPropertyItemFormValues();
+            $("#PatientId").val($("#PatientId").val());
+            $('#modal-view-property-item').modal('show');
+        }
+
+        function EditPropertyItem(btn) {
+            ResetPropertyItemFormValues();
+            var propertyId = $(btn).data("propertyitemid");
+            if (propertyId !== undefined) {
+                $("#PropertyId").val(propertyId);
+
+                $.get("/PropertyItems/LoadPropertyItem?propertyItemId=" + propertyId, function (data, status) {
+                    $("#PatientId").val(data.PatientId);
+                    $("#ItemName").val(data.ItemName);
+                    $("#Description").val(data.Description);
+                    $("#Qty").val(data.Qty);
+                    $("#CollectedBy").val(data.CollectedBy);
+                    $("#CollectedOn").val(GetDateIfDate(data.CollectedOn));
+                });
+
+                $('#modal-view-property-item').modal('show');
+            }
+        }
+
+        function DeletePropertyItem(btn) {
+            var propertyId = $(btn).data("propertyitemid");
+            if (propertyId !== undefined) {
+                $.ajax({
+                    url: "/PropertyItems/DeletePropertyItem?id=" + propertyId,
+                    method: "POST",  // post
+                    beforeSend: function () {
+                        return confirm("Are you sure you would like to delete this property item?");
+                    },
+                    success: function (data) {
+                        if (data) {
+                            LoadPropertyItem();
+                            toastr.success("Property item deleted successfully.");
+                        }
+                        else {
+                            toastr.error("Invalid request. Please enter proper data.");
+                        }
+                    }
+                });
+            }
+        }
+
+        function GetDateIfDate(d) {
+            if (d !== null) {
+                var m = d.match(/\/Date\((\d+)\)\//);
+                return m ? (new Date(+m[1])).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }) : d;
+            }
+            else
+                return d;
+        }
+    </script>
+}
+
